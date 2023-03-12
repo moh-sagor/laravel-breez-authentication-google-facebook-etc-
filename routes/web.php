@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SocialLoginController;
+use App\Http\Controllers\FrontendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +15,17 @@ use App\Http\Controllers\SocialLoginController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// for frontend 
+Route::get('/', [FrontendController::class, 'index'])->name("frontend.home");
+Route::get('/user/register', [FrontendController::class, 'userregister'])->name("user.register");
+Route::get('/user/login', [FrontendController::class, 'userlogin'])->name("user.login");
 
-Route::get('/', function () {
-    return view('auth.login');
-});
 
+
+// for backend 
 Route::get('/gotogoogle', [SocialLoginController::class, 'gotogoogle'])->name('gotogoogle');
 Route::get('/apigstore', [SocialLoginController::class, 'apigstore']);
+Route::post('/updatepassword{sid}', [SocialLoginController::class, 'updatepassword'])->name("updatepassword");
 
 Route::get('/dashboard', function () {
     return view('dashboard');

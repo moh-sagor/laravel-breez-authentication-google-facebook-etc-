@@ -43,16 +43,16 @@ class SocialLoginController extends Controller
         $user = User::where('sid', $socialUser->id)->first();
         if ($user == null) {
             $store = new User();
-            $store->uname = $socialUser->email;
+
             $store->fname = $socialUser->user['given_name'];
             $store->lname = $socialUser->user['family_name'];
             $store->email = $socialUser->email;
             $store->pic = $socialUser->avatar;
-            $store->password = Hash::make($socialUser->email);
+
             $store->sid = $socialUser->id;
             $store->save();
-            Auth::login($store);
-            return redirect(RouteServiceProvider::HOME);
+            $sid = $socialUser->id;
+            return view("auth.set-password", compact("sid"));
 
         } else {
             Auth::login($user);
@@ -79,9 +79,15 @@ class SocialLoginController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updatepassword(Request $request, $sid)
     {
-        //
+        $user = User::where("sid", $sid)->first();
+        $user->uname = $request->uname;
+        $user->password = Hash::make($request->password);
+        $user->update();
+        Auth::login($user);
+        return redirect(RouteServiceProvider::HOME);
+
     }
 
     /**
